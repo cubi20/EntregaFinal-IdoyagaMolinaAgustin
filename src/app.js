@@ -30,6 +30,11 @@ app.engine(
   engine({
     helpers: {
       eq: (a, b) => a === b,
+      // Primera imagen del producto; si no tiene, una imagen por defecto
+      thumbnail: (thumbnails) =>
+        Array.isArray(thumbnails) && thumbnails.length > 0
+          ? thumbnails[0]
+          : "/img/placeholder.svg",
       multiply: (a, b) => a * b,
       // Formatea un número como precio en pesos argentinos
       money: (value) =>

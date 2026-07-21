@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="COMPONENTES">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1b1f27"/>
+      <stop offset="100%" stop-color="#12151c"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <g stroke="#b98ded" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="135" y="105" width="130" height="100" rx="8"/>
+    <path d="M165 105V85M200 105V85M235 105V85M165 205v20M200 205v20M235 205v20"/>
+  </g>
+  <text x="200" y="268" text-anchor="middle" fill="#b98ded" opacity="0.75"
+        font-family="system-ui, -apple-system, sans-serif" font-size="20" letter-spacing="2">COMPONENTES</text>
+</svg>

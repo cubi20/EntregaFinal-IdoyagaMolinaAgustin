@@ -469,3 +469,36 @@ h1 {
     grid-template-columns: 1fr;
   }
 }
+
+/* Imágenes de producto */
+.thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #12151c;
+  border: 1px solid #232833;
+}
+
+.thumb-link {
+  display: block;
+  margin-bottom: 0.9rem;
+}
+
+.thumb--lg {
+  max-width: 420px;
+  margin-bottom: 1.25rem;
+}
+
+.thumb--sm {
+  width: 84px;
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.cart-item-main {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}

@@ -38,7 +38,14 @@ const seed = async () => {
 
   // Se limpia la colección para que el seed sea repetible
   await ProductModel.deleteMany({});
-  const created = await ProductModel.insertMany(products);
+
+  // Cada producto usa la imagen de su categoría, servida desde /public/img
+  const withThumbnails = products.map((product) => ({
+    ...product,
+    thumbnails: [`/img/${product.category}.svg`],
+  }));
+
+  const created = await ProductModel.insertMany(withThumbnails);
 
   console.log(`Se cargaron ${created.length} productos de ejemplo.`);
   await mongoose.disconnect();

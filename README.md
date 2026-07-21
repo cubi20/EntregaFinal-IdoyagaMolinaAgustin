@@ -75,6 +75,7 @@ src/
 └── views/                     # Plantillas de Handlebars
 public/
 ├── css/styles.css
+├── img/                    # Imágenes de los productos (una por categoría) + placeholder
 └── js/
     ├── realtime.js            # Cliente de websockets
     └── cart.js                # Manejo del carrito desde el navegador
@@ -184,6 +185,10 @@ almacena únicamente el id pero al solicitarlo se desglosan los productos con to
 
 En el catálogo, cada producto se resuelve de las dos formas que plantea la consigna: se puede
 **entrar al detalle** o **agregarlo al carrito directamente** desde la tarjeta.
+
+Cada producto muestra la imagen de su campo `thumbnails`. Si no tiene ninguna cargada, se usa una
+imagen por defecto, de modo que la vista nunca queda rota. El link "Mi carrito" del navbar muestra
+entre paréntesis la cantidad total de ejemplares que hay en el carrito.
 
 El id del carrito activo se guarda en `localStorage`, así persiste al navegar entre páginas.
 

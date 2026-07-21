@@ -10,9 +10,12 @@
     <ul class="cart-list">
       {{#each items}}
         <li class="cart-item" data-product-id="{{product._id}}">
-          <div>
+          <div class="cart-item-main">
+            <img class="thumb thumb--sm" src="{{thumbnail product.thumbnails}}" alt="{{product.title}}" />
+            <div>
             <h2><a class="product-title" href="/products/{{product._id}}">{{product.title}}</a></h2>
             <span class="meta">{{money product.price}} c/u · Categoría: {{product.category}}</span>
+            </div>
           </div>
 
           <div class="cart-controls">

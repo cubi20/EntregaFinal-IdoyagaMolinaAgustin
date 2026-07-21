@@ -36,6 +36,9 @@
     <ul class="product-grid">
       {{#each products}}
         <li class="product-card">
+          <a class="thumb-link" href="/products/{{_id}}">
+            <img class="thumb" src="{{thumbnail thumbnails}}" alt="{{title}}" loading="lazy" />
+          </a>
           <div>
             <h2><a class="product-title" href="/products/{{_id}}">{{title}}</a></h2>
             <p class="description">{{description}}</p>
