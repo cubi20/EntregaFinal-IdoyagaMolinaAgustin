@@ -1,0 +1,28 @@
+<main class="container">
+  <header class="page-header">
+    <h1>Productos en tiempo real</h1>
+    <p class="subtitle">
+      La lista se actualiza automáticamente vía websockets al crear o eliminar productos,
+      tanto desde este formulario como desde la API HTTP.
+    </p>
+  </header>
+
+  <form id="product-form" class="form">
+    <input type="text" name="title" placeholder="Título" required />
+    <input type="text" name="description" placeholder="Descripción" required />
+    <input type="text" name="code" placeholder="Código" required />
+    <input type="number" name="price" placeholder="Precio" step="0.01" min="0" required />
+    <input type="number" name="stock" placeholder="Stock" min="0" required />
+    <input type="text" name="category" placeholder="Categoría" required />
+    <button type="submit">Agregar producto</button>
+  </form>
+
+  <p id="error" class="error"></p>
+
+  <ul id="product-list" class="product-list"></ul>
+
+  <a class="link" href="/products">&larr; Volver al catálogo</a>
+</main>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/realtime.js"></script>

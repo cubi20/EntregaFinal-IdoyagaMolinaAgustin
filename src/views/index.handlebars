@@ -1,0 +1,84 @@
+<main class="container container--wide">
+  <header class="page-header">
+    <h1>Productos</h1>
+    <p class="subtitle">Catálogo con paginación, filtros y ordenamiento sobre MongoDB.</p>
+  </header>
+
+  {{!-- Los filtros viajan por GET, así quedan reflejados en la URL igual que en la API --}}
+  <form class="filters" method="GET" action="/products">
+    <select name="query" aria-label="Filtrar productos">
+      {{#each queryOptions}}
+        <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+      {{/each}}
+    </select>
+
+    <select name="sort" aria-label="Ordenar por precio">
+      {{#each sortOptions}}
+        <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+      {{/each}}
+    </select>
+
+    <select name="limit" aria-label="Productos por página">
+      {{#each limitOptions}}
+        <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+      {{/each}}
+    </select>
+
+    <button type="submit">Aplicar</button>
+    <a class="link" href="/products">Limpiar</a>
+  </form>
+
+  <p class="results-count">
+    {{pagination.totalDocs}} producto(s) · página {{pagination.page}} de {{pagination.totalPages}}
+  </p>
+
+  {{#if hasProducts}}
+    <ul class="product-grid">
+      {{#each products}}
+        <li class="product-card">
+          <div>
+            <h2><a class="product-title" href="/products/{{_id}}">{{title}}</a></h2>
+            <p class="description">{{description}}</p>
+            <p class="price">{{money price}}</p>
+            <span class="meta">
+              Código: {{code}} · Stock: {{stock}} · Categoría: {{category}}
+              {{#if status}}
+                <span class="badge badge--ok">Disponible</span>
+              {{else}}
+                <span class="badge badge--off">No disponible</span>
+              {{/if}}
+            </span>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn--ghost" href="/products/{{_id}}">Ver detalle</a>
+            <button class="btn add-to-cart" data-id="{{_id}}">Agregar al carrito</button>
+          </div>
+        </li>
+      {{/each}}
+    </ul>
+
+    <nav class="pagination">
+      {{#if pagination.hasPrevPage}}
+        <a class="page-link" href="{{pagination.prevLink}}">&larr; Anterior</a>
+      {{else}}
+        <span class="page-link is-disabled">&larr; Anterior</span>
+      {{/if}}
+
+      {{#each pagination.pages}}
+        {{#if isCurrent}}
+          <span class="page-link is-current">{{number}}</span>
+        {{else}}
+          <a class="page-link" href="{{link}}">{{number}}</a>
+        {{/if}}
+      {{/each}}
+
+      {{#if pagination.hasNextPage}}
+        <a class="page-link" href="{{pagination.nextLink}}">Siguiente &rarr;</a>
+      {{else}}
+        <span class="page-link is-disabled">Siguiente &rarr;</span>
+      {{/if}}
+    </nav>
+  {{else}}
+    <p class="empty">No se encontraron productos con ese criterio de búsqueda.</p>
+  {{/if}}
+</main>

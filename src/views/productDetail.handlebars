@@ -1,0 +1,31 @@
+<main class="container">
+  <a class="link" href="/products">&larr; Volver al catálogo</a>
+
+  <article class="detail">
+    <header class="page-header">
+      <h1>{{product.title}}</h1>
+      <p class="price price--lg">{{money product.price}}</p>
+    </header>
+
+    <p class="description">{{product.description}}</p>
+
+    <dl class="detail-list">
+      <div><dt>Código</dt><dd>{{product.code}}</dd></div>
+      <div><dt>Categoría</dt><dd>{{product.category}}</dd></div>
+      <div><dt>Stock</dt><dd>{{product.stock}}</dd></div>
+      <div>
+        <dt>Disponibilidad</dt>
+        <dd>
+          {{#if product.status}}
+            <span class="badge badge--ok">Disponible</span>
+          {{else}}
+            <span class="badge badge--off">No disponible</span>
+          {{/if}}
+        </dd>
+      </div>
+      <div><dt>ID</dt><dd class="mono">{{product._id}}</dd></div>
+    </dl>
+
+    <button class="btn add-to-cart" data-id="{{product._id}}">Agregar al carrito</button>
+  </article>
+</main>

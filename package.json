@@ -1,0 +1,34 @@
+{
+  "name": "entrega-final-backend",
+  "version": "3.0.0",
+  "description": "Entrega Final - Programación Backend I - API REST con Express, MongoDB (Mongoose), paginación, Handlebars y Socket.io",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js",
+    "seed": "node src/seed.js"
+  },
+  "keywords": [
+    "express",
+    "nodejs",
+    "api",
+    "backend",
+    "mongodb",
+    "mongoose",
+    "paginate",
+    "handlebars",
+    "socket.io",
+    "websockets"
+  ],
+  "author": "Agustín Idoyaga Molina",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^4.19.2",
+    "express-handlebars": "^9.0.1",
+    "mongoose": "^9.8.0",
+    "mongoose-paginate-v2": "^1.9.5",
+    "socket.io": "^4.8.3"
+  }
+}
