@@ -136,7 +136,7 @@ class ProductManager {
     }
 
     const updatedProduct = await ProductModel.findByIdAndUpdate(pid, allowedUpdates, {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     }).lean();
 
