@@ -35,6 +35,7 @@ Cada punto de la consigna, dónde está resuelto y con qué se puede comprobar. 
 | Link al repositorio sin `node_modules` | [`.gitignore`](.gitignore) | `node_modules/` no está en el repositorio |
 | Comentarios en el código | Todos los archivos de `src/` | — |
 | La lógica de negocio no cambia, sólo la persistencia | [`src/managers/`](src/managers): mismos métodos que en las entregas anteriores, ahora sobre Mongoose | — |
+| Se conserva lo de las entregas anteriores: CRUD de productos, carritos (`POST /`, `GET /:cid`, `POST /:cid/product/:pid`) y vista `/realtimeproducts` con websockets | Mismos routers y [`socketManager.js`](src/sockets/socketManager.js) | Tests de [`test/products.test.js`](test/products.test.js), [`test/carts.test.js`](test/carts.test.js) y [`test/sockets.test.js`](test/sockets.test.js) |
 
 ### Productos: `GET /api/products`
 
@@ -362,7 +363,7 @@ la API responde JSON y las vistas muestran una página de error.
 
 | Ruta | Vista | Descripción |
 | --- | --- | --- |
-| `/` | — | Redirige a `/products` |
+| `/` | — | Redirige a `/products`. El catálogo `index.handlebars` reemplaza a la lista `home.handlebars` de la segunda entrega, como pide la consigna final |
 | `/products` | `index.handlebars` | Catálogo paginado, con filtro por categoría o disponibilidad y orden por precio |
 | `/products/:pid` | `productDetail.handlebars` | Detalle completo del producto, con botón para agregarlo al carrito |
 | `/carts/:cid` | `cart.handlebars` | **Sólo** los productos de ese carrito, con cantidades, subtotales y total |
