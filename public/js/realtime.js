@@ -13,6 +13,14 @@ const escapeHtml = (value) =>
       ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]
   );
 
+// Mismo formato de precio que en el resto de las vistas (pesos argentinos)
+const formatPrice = (value) =>
+  new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: "ARS",
+    maximumFractionDigits: 2,
+  }).format(Number(value) || 0);
+
 // Se recibe la lista actualizada desde el servidor y se vuelve a renderizar por completo
 socket.on("products", (products) => {
   if (!products || products.length === 0) {
@@ -27,7 +35,7 @@ socket.on("products", (products) => {
         <div>
           <h2>${escapeHtml(product.title)}</h2>
           <p class="description">${escapeHtml(product.description)}</p>
-          <p class="price">$${escapeHtml(product.price)}</p>
+          <p class="price">${escapeHtml(formatPrice(product.price))}</p>
           <span class="meta">Código: ${escapeHtml(product.code)} · Stock: ${escapeHtml(
             product.stock
           )} · Categoría: ${escapeHtml(product.category)}</span>

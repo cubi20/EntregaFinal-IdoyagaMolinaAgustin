@@ -5,13 +5,39 @@ import mongoosePaginate from "mongoose-paginate-v2";
 // usando con la persistencia en archivos, ahora validados por Mongoose.
 const productSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true, trim: true },
-    description: { type: String, required: true, trim: true },
-    code: { type: String, required: true, unique: true, trim: true },
-    price: { type: Number, required: true, min: 0 },
+    title: { type: String, required: [true, "El campo title es obligatorio"], trim: true },
+    description: {
+      type: String,
+      required: [true, "El campo description es obligatorio"],
+      trim: true,
+    },
+    code: {
+      type: String,
+      required: [true, "El campo code es obligatorio"],
+      unique: true,
+      trim: true,
+    },
+    price: {
+      type: Number,
+      required: [true, "El campo price es obligatorio"],
+      min: [0, "El precio no puede ser negativo"],
+    },
     status: { type: Boolean, default: true },
-    stock: { type: Number, required: true, min: 0 },
-    category: { type: String, required: true, trim: true, lowercase: true },
+    stock: {
+      type: Number,
+      required: [true, "El campo stock es obligatorio"],
+      min: [0, "El stock no puede ser negativo"],
+      validate: {
+        validator: Number.isInteger,
+        message: "El stock debe ser un número entero",
+      },
+    },
+    category: {
+      type: String,
+      required: [true, "El campo category es obligatorio"],
+      trim: true,
+      lowercase: true,
+    },
     thumbnails: { type: [String], default: [] },
   },
   { versionKey: false }

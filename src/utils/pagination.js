@@ -1,6 +1,8 @@
 // Construye los links prevLink / nextLink de la paginación preservando los
 // query params originales de la petición (limit, sort y query), para que al
 // navegar entre páginas no se pierdan ni el filtro ni el ordenamiento.
+// basePath puede ser una ruta ("/products") o una URL completa
+// ("http://localhost:8080/api/products").
 export const buildPageLink = (basePath, currentQuery = {}, page) => {
   if (!page) return null;
 

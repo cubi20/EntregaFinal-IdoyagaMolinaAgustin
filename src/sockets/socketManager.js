@@ -9,6 +9,11 @@ const productManager = new ProductManager();
 // global y sólo consume las funciones que este módulo expone.
 let io = null;
 
+// Los mensajes de conexión no se muestran mientras corren los tests
+const log = (message) => {
+  if (process.env.NODE_ENV !== "test") console.log(message);
+};
+
 // Inicializa el servidor de websockets sobre el servidor HTTP ya creado.
 export const initSocket = (httpServer) => {
   if (io) return io; // si ya fue inicializado, se reutiliza la misma instancia
@@ -16,10 +21,7 @@ export const initSocket = (httpServer) => {
   io = new Server(httpServer);
 
   io.on("connection", async (socket) => {
-    console.log(`Cliente conectado: ${socket.id}`);
-
-    // Al conectarse, se le manda la lista actual de productos
-    socket.emit("products", await productManager.getProducts());
+    log(`Cliente conectado: ${socket.id}`);
 
     // Alta de un producto desde el formulario de la vista (por websocket)
     socket.on("newProduct", async (productData) => {
@@ -42,8 +44,15 @@ export const initSocket = (httpServer) => {
     });
 
     socket.on("disconnect", () => {
-      console.log(`Cliente desconectado: ${socket.id}`);
+      log(`Cliente desconectado: ${socket.id}`);
     });
+
+    // Al conectarse, se le manda la lista actual de productos
+    try {
+      socket.emit("products", await productManager.getProducts());
+    } catch (error) {
+      socket.emit("errorMessage", "No se pudo obtener la lista de productos");
+    }
   });
 
   return io;

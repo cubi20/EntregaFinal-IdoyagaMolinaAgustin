@@ -12,15 +12,15 @@ const productManager = new ProductManager();
 //   page  -> página solicitada (default 1)
 //   sort  -> asc | desc, ordena por precio (si no viene, no ordena)
 //   query -> filtro por categoría o por disponibilidad (si no viene, trae todo)
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
     const { limit, page, sort, query } = req.query;
 
     const result = await productManager.getPaginatedProducts({ limit, page, sort, query });
 
-    // Los links conservan limit, sort y query para no perder el filtro al paginar
-    const prevLink = buildPageLink("/api/products", req.query, result.prevPage);
-    const nextLink = buildPageLink("/api/products", req.query, result.nextPage);
+    // Links directos (URL completa) a la página previa y a la siguiente.
+    // Conservan limit, sort y query para no perder el filtro al paginar.
+    const baseUrl = `${req.protocol}://${req.get("host")}${req.baseUrl}`;
 
     res.status(200).json({
       status: "success",
@@ -31,42 +31,42 @@ router.get("/", async (req, res) => {
       page: result.page,
       hasPrevPage: result.hasPrevPage,
       hasNextPage: result.hasNextPage,
-      prevLink,
-      nextLink,
+      prevLink: result.hasPrevPage ? buildPageLink(baseUrl, req.query, result.prevPage) : null,
+      nextLink: result.hasNextPage ? buildPageLink(baseUrl, req.query, result.nextPage) : null,
     });
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    next(error);
   }
 });
 
 // GET /:pid - Trae sólo el producto con el id proporcionado
-router.get("/:pid", async (req, res) => {
+router.get("/:pid", async (req, res, next) => {
   try {
     const product = await productManager.getProductById(req.params.pid);
     res.status(200).json({ status: "success", payload: product });
   } catch (error) {
-    res.status(404).json({ status: "error", message: error.message });
+    next(error);
   }
 });
 
 // POST / - Agrega un nuevo producto (id autogenerado por MongoDB)
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   try {
     const newProduct = await productManager.addProduct(req.body);
 
-    // El router ya no recibe ni manipula la instancia de io: sólo llama a la
+    // El router no recibe ni manipula la instancia de io: sólo llama a la
     // función que expone el socketManager (singleton). Así, al crear un
     // producto por HTTP, la vista de tiempo real también se sincroniza.
     await emitProductsUpdate();
 
     res.status(201).json({ status: "success", payload: newProduct });
   } catch (error) {
-    res.status(400).json({ status: "error", message: error.message });
+    next(error);
   }
 });
 
 // PUT /:pid - Actualiza un producto sin modificar ni eliminar su id
-router.put("/:pid", async (req, res) => {
+router.put("/:pid", async (req, res, next) => {
   try {
     const updatedProduct = await productManager.updateProduct(req.params.pid, req.body);
 
@@ -74,12 +74,12 @@ router.put("/:pid", async (req, res) => {
 
     res.status(200).json({ status: "success", payload: updatedProduct });
   } catch (error) {
-    res.status(404).json({ status: "error", message: error.message });
+    next(error);
   }
 });
 
-// DELETE /:pid - Elimina el producto con el pid indicado
-router.delete("/:pid", async (req, res) => {
+// DELETE /:pid - Elimina el producto con el pid indicado (y lo saca de los carritos)
+router.delete("/:pid", async (req, res, next) => {
   try {
     const deletedProduct = await productManager.deleteProduct(req.params.pid);
 
@@ -88,7 +88,7 @@ router.delete("/:pid", async (req, res) => {
 
     res.status(200).json({ status: "success", payload: deletedProduct });
   } catch (error) {
-    res.status(404).json({ status: "error", message: error.message });
+    next(error);
   }
 });
 

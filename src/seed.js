@@ -5,6 +5,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import connectDB from "./config/database.js";
 import ProductModel from "./models/product.model.js";
+import CartModel from "./models/cart.model.js";
 
 const products = [
   { title: "Notebook Lenovo IdeaPad 3", description: "Ryzen 5, 16GB RAM, SSD 512GB", code: "NB-001", price: 899000, stock: 12, category: "notebooks" },
@@ -36,8 +37,10 @@ const products = [
 const seed = async () => {
   await connectDB();
 
-  // Se limpia la colección para que el seed sea repetible
+  // Se limpian productos y carritos para que el seed sea repetible y ningún
+  // carrito quede apuntando a productos que ya no existen
   await ProductModel.deleteMany({});
+  await CartModel.deleteMany({});
 
   // Cada producto usa la imagen de su categoría, servida desde /public/img
   const withThumbnails = products.map((product) => ({

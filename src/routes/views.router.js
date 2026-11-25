@@ -26,7 +26,23 @@ const buildQueryOptions = (categories, current = "") => {
 const buildSelectOptions = (values, current = "") =>
   values.map((option) => ({ ...option, selected: option.value === current }));
 
-// GET / - La home ahora es el catálogo paginado
+// Opciones de "productos por página". Si en la URL vino otro limit (ej: ?limit=6),
+// se suma como opción para que el selector muestre el valor que se está usando.
+const buildLimitOptions = (current = "") => {
+  const options = [
+    { value: "", label: "10 por página" },
+    { value: "5", label: "5 por página" },
+    { value: "20", label: "20 por página" },
+    { value: "50", label: "50 por página" },
+  ];
+
+  if (current && !options.some((option) => option.value === current)) {
+    options.push({ value: current, label: `${current} por página` });
+  }
+  return buildSelectOptions(options, current);
+};
+
+// GET / - La home es el catálogo paginado
 router.get("/", (req, res) => res.redirect("/products"));
 
 // GET /products - Catálogo con paginación, filtros y ordenamiento.
@@ -58,23 +74,15 @@ router.get("/products", async (req, res, next) => {
         ],
         sort
       ),
-      limitOptions: buildSelectOptions(
-        [
-          { value: "", label: "10 por página" },
-          { value: "5", label: "5 por página" },
-          { value: "20", label: "20 por página" },
-          { value: "50", label: "50 por página" },
-        ],
-        limit
-      ),
+      limitOptions: buildLimitOptions(limit),
       pagination: {
         page: result.page,
         totalPages: result.totalPages,
         totalDocs: result.totalDocs,
         hasPrevPage: result.hasPrevPage,
         hasNextPage: result.hasNextPage,
-        prevLink: buildPageLink("/products", req.query, result.prevPage),
-        nextLink: buildPageLink("/products", req.query, result.nextPage),
+        prevLink: result.hasPrevPage ? buildPageLink("/products", req.query, result.prevPage) : null,
+        nextLink: result.hasNextPage ? buildPageLink("/products", req.query, result.nextPage) : null,
         pages,
       },
     });
@@ -84,48 +92,40 @@ router.get("/products", async (req, res, next) => {
 });
 
 // GET /products/:pid - Detalle completo del producto, con botón de agregar al carrito
-router.get("/products/:pid", async (req, res) => {
+router.get("/products/:pid", async (req, res, next) => {
   try {
     const product = await productManager.getProductById(req.params.pid);
     res.render("productDetail", { title: product.title, product });
   } catch (error) {
-    res.status(404).render("error", {
-      title: "Producto no encontrado",
-      message: error.message,
-    });
+    next(error);
   }
 });
 
 // GET /carts/:cid - Muestra SÓLO los productos que pertenecen a ese carrito
-router.get("/carts/:cid", async (req, res) => {
+router.get("/carts/:cid", async (req, res, next) => {
   try {
     const cart = await cartManager.getCartById(req.params.cid);
 
-    // Cada línea se arma con su subtotal para mostrarla en la vista.
-    // Si un producto del carrito fue eliminado de la base, el populate
-    // devuelve null: esas líneas se descartan para no romper el render.
-    const items = cart.products
-      .filter((item) => item.product)
-      .map((item) => ({
-        product: item.product,
-        quantity: item.quantity,
-        subtotal: item.product.price * item.quantity,
-      }));
+    // Cada línea se arma con su subtotal para mostrarla en la vista
+    const items = cart.products.map((item) => ({
+      product: item.product,
+      quantity: item.quantity,
+      subtotal: item.product.price * item.quantity,
+    }));
 
     const total = items.reduce((acc, item) => acc + item.subtotal, 0);
+    const units = items.reduce((acc, item) => acc + item.quantity, 0);
 
     res.render("cart", {
       title: "Mi carrito",
       cartId: String(cart._id),
       items,
       total,
+      units,
       isEmpty: items.length === 0,
     });
   } catch (error) {
-    res.status(404).render("error", {
-      title: "Carrito no encontrado",
-      message: error.message,
-    });
+    next(error);
   }
 });
 

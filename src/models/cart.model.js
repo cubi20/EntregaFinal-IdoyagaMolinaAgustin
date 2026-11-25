@@ -8,9 +8,18 @@ const cartProductSchema = new mongoose.Schema(
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
-      required: true,
+      required: [true, "Cada línea del carrito necesita el id del producto"],
     },
-    quantity: { type: Number, required: true, min: 1, default: 1 },
+    quantity: {
+      type: Number,
+      required: true,
+      min: [1, "La cantidad debe ser mayor o igual a 1"],
+      default: 1,
+      validate: {
+        validator: Number.isInteger,
+        message: "La cantidad debe ser un número entero",
+      },
+    },
   },
   { _id: false }
 );
